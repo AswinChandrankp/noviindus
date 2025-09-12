@@ -99,18 +99,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       final password = _passwordController.text.trim();
         
                       Provider.of<AuthProvider>(context, listen: false)
-                          .login(username, password)
-                          .then((loginModel) {
-                        if (loginModel != null && loginModel.status == true) {
-                          // Navigate to next screen on success
-                          Navigator.pushReplacementNamed(context, '/home');
-                        } else {
-                          // Show error message or snackbar
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(loginModel?.message ?? 'Login failed')),
-                          );
-                        }
-                      });
+                          .login(username, password);
+                      //     .then((loginModel) {
+                      //   if (loginModel != null && loginModel.status == true) {
+                      //     // Navigate to next screen on success
+                      //     Navigator.pushReplacementNamed(context, '/home');
+                      //   } else {
+                      //     // Show error message or snackbar
+                      //     ScaffoldMessenger.of(context).showSnackBar(
+                      //       SnackBar(content: Text(loginModel?.message ?? 'Login failed')),
+                      //     );
+                      //   }
+                      // });
                     },
                   ),
                 ],

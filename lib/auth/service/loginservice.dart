@@ -70,7 +70,7 @@ class AuthService {
     await prefs.remove(_tokenKey);
   }
 
-  Future<LoginModel?> login(String username, String password) async {
+  Future<loginModel?> login(String username, String password) async {
     try {
       var request = http.MultipartRequest(
         'POST',
@@ -85,13 +85,13 @@ class AuthService {
         final responseString = await streamedResponse.stream.bytesToString();
         final Map<String, dynamic> jsonData = json.decode(responseString);
 
-        final loginModel = LoginModel.fromJson(jsonData);
+        final loginModel data = loginModel.fromJson(jsonData);
 
-        if (loginModel.token != null) {
-          await saveToken(loginModel.token!);
+        if (data.token != null) {
+          await saveToken(data.token!);
         }
 
-        return loginModel;
+        return data;
       } else {
         return null;
       }

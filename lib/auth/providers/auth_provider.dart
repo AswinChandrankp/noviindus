@@ -135,13 +135,13 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<LoginModel?> login(String username, String password) async {
+  Future<void> login(String username, String password) async {
     final loginModel = await _authService.login(username, password);
     if (loginModel != null) {
       _token = loginModel.token;
       notifyListeners();
     }
-    return loginModel;
+    // return data;
   }
 
   Future<void> logout() async {

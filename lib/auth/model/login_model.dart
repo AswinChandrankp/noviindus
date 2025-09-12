@@ -1,18 +1,18 @@
-class LoginModel {
+class loginModel {
   bool? status;
   String? message;
   String? token;
   bool? isSuperuser;
   UserDetails? userDetails;
 
-  LoginModel(
+  loginModel(
       {this.status,
       this.message,
       this.token,
       this.isSuperuser,
       this.userDetails});
 
-  LoginModel.fromJson(Map<String, dynamic> json) {
+  loginModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
     token = json['token'];
