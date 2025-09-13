@@ -12,11 +12,12 @@ class InvoiceViewerPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Invoice Preview')),
       body: PDFView(
+        
         filePath: filePath,
         enableSwipe: true,
         swipeHorizontal: false,
         autoSpacing: true,
-        pageFling: true,
+        pageFling: false,
       ),
     );
   }

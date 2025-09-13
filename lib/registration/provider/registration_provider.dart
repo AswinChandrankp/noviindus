@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:noviindus/constants.dart';
 import 'package:noviindus/registration/models/branch_model.dart';
@@ -233,9 +234,11 @@ class RegistrationProvider with ChangeNotifier {
   void addTreatmentToList() {
     addTreatment.add({
       "name": _selectedTreatment?.name ?? '',
+      'price': _selectedTreatment?.price.toString() ?? '',
       'treatmentid': _selectedTreatment?.id.toString() ?? '',
       'male': _maleCount.toString(),
       'female': _femaleCount.toString(),
+      'total': (_maleCount + _femaleCount) * double.parse(_selectedTreatment?.price ?? '0'),
     });
     notifyListeners();
     clearCounts();
@@ -300,6 +303,8 @@ class RegistrationProvider with ChangeNotifier {
     List<int> allTreatmentIds = [];
 
     for (var treatment in addTreatment) {
+      print(treatment["price"]);
+      print(treatment["total"]);
       maleTreatmentIds.add(int.parse(treatment['male']));
       femaleTreatmentIds.add(int.parse(treatment['female']));
       allTreatmentIds.add(int.parse(treatment['treatmentid']));
@@ -327,78 +332,764 @@ class RegistrationProvider with ChangeNotifier {
 
 
 
+// Future<String> generateInvoicePDF() async {
+//     final PdfDocument document = PdfDocument();
+//     final PdfPage page = document.pages.add();
+//     final Size pageSize = page.getClientSize();
+//     final graphics = page.graphics;
+
+//     final PdfFont titleFont = PdfStandardFont(PdfFontFamily.helvetica, 16, style: PdfFontStyle.bold);
+//     final PdfFont regularFont = PdfStandardFont(PdfFontFamily.helvetica, 12);
+
+//     graphics.drawString(
+//       'Invoice for ${_nameController.text}',
+//       titleFont,
+//       bounds: Rect.fromLTWH(40, 50, pageSize.width - 80, 25),
+//     );
+
+//     graphics.drawString(
+//       'Phone: ${_phoneController.text}',
+//       regularFont,
+//       bounds: Rect.fromLTWH(40, 90, pageSize.width - 80, 20),
+//     );
+
+//     graphics.drawString(
+//       'Address: ${_selectedadress ?? '-'}',
+//       regularFont,
+//       bounds: Rect.fromLTWH(40, 115, pageSize.width - 80, 20),
+//     );
+
+//     graphics.drawString(
+//       'Branch: ${_selectedBranch?.name ?? '-'}',
+//       regularFont,
+//       bounds: Rect.fromLTWH(40, 140, pageSize.width - 80, 20),
+//     );
+
+//     double y = 170;
+
+//     graphics.drawString(
+//       'Treatments:',
+//       titleFont,
+//       bounds: Rect.fromLTWH(40, y, pageSize.width - 80, 20),
+//     );
+
+//     y += 30;
+
+//     for (var treatment in addTreatment) {
+//       graphics.drawString(
+//         '${treatment['name']} (Males: ${treatment['male']}, Females: ${treatment['female']})',
+//         regularFont,
+//         bounds: Rect.fromLTWH(40, y, pageSize.width - 80, 20),
+//       );
+//       y += 25;
+//     }
+
+//     y += 10;
+//     graphics.drawString(
+//       'Total Amount: ₹${_totalAmountController.text}',
+//       titleFont,
+//       bounds: Rect.fromLTWH(40, y + 20, pageSize.width - 80, 25),
+//     );
+
+//     // Save PDF bytes
+//     final bytes = await document.save();
+//     document.dispose();
+
+//     // Save to file
+//     final directory = await getApplicationDocumentsDirectory();
+//     final filePath = '${directory.path}/invoice_${DateTime.now().millisecondsSinceEpoch}.pdf';
+//     final file = File(filePath);
+//     await file.writeAsBytes(bytes);
+
+//     return filePath;
+//   }
+
+
+// Future<String> generateInvoicePDF() async {
+//   final PdfDocument document = PdfDocument();
+//   final PdfPage page = document.pages.add();
+//   final Size pageSize = page.getClientSize();
+//   final graphics = page.graphics;
+
+//   // Fonts
+//   final PdfFont titleFont = PdfStandardFont(PdfFontFamily.helvetica, 20, style: PdfFontStyle.bold);
+//   final PdfFont sectionTitleFont = PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold);
+//   final PdfFont regularFont = PdfStandardFont(PdfFontFamily.helvetica, 12);
+
+//   // Load logo image bytes once
+//   final ByteData logoBytes = await rootBundle.load('assets/images/Asset.png');
+//   final Uint8List logoList = logoBytes.buffer.asUint8List();
+//   final PdfBitmap logo = PdfBitmap(logoList);
+
+//   // ----------- HEADER SETUP -----------
+//   const double headerHeight = 120;
+//   final PdfPageTemplateElement header = PdfPageTemplateElement(Rect.fromLTWH(0, 0, pageSize.width, headerHeight));
+
+//   // Header background color
+//   header.graphics.drawRectangle(
+//     // brush: PdfSolidBrush(PdfColor(245, 245, 245)),
+
+//     bounds: Rect.fromLTWH(0, 0, pageSize.width, headerHeight),
+//   );
+
+//   // Logo left-aligned in header
+//   const double logoWidth = 80;
+//   const double logoHeight = 80;
+//   const double logoMarginLeft = 40;
+//   final double logoPosY = (headerHeight - logoHeight) / 2;
+
+//   header.graphics.drawImage(logo, Rect.fromLTWH(logoMarginLeft, logoPosY, logoWidth, logoHeight));
+
+//   // Header text next to logo
+//   header.graphics.drawString(
+//   'Cheepunkal P.O. Kumarakom, kottayam, Kerala - 686563\ne-mail: unknown@gmail.com\nMob: +91 9876543210 | +91 9786543210',
+//   PdfStandardFont(PdfFontFamily.helvetica, 8, style: PdfFontStyle.regular,),
+//   bounds: Rect.fromLTWH(
+//     0,
+//     logoPosY + 15,
+//     pageSize.width - 40, 
+//     logoHeight,
+//   ),
+//   brush:  PdfSolidBrush(
+//     PdfColor(100, 128, 128),
+//   ),
+//   format: PdfStringFormat(
+//     alignment: PdfTextAlignment.right,
+//     lineAlignment: PdfVerticalAlignment.top,
+//   ),
+// );
+//   header.graphics.drawString(
+//   'KUMARAKOM',
+//   PdfStandardFont(PdfFontFamily.helvetica, 10, style: PdfFontStyle.regular,),
+//   bounds: Rect.fromLTWH(
+//     0,
+//     logoPosY,
+//     pageSize.width - 40, 
+//     logoHeight,
+//   ),
+//   brush:  PdfSolidBrush(
+//   PdfColor(0, 0, 0)
+
+//   ),
+//   format: PdfStringFormat(
+//     alignment: PdfTextAlignment.right,
+//     lineAlignment: PdfVerticalAlignment.top,
+//   ),
+// );
+//   header.graphics.drawString(
+//   'GST No: 32AABCU9603R1ZW',
+//   PdfStandardFont(PdfFontFamily.helvetica, 10, style: PdfFontStyle.regular,),
+//   bounds: Rect.fromLTWH(
+//     0,
+//     logoPosY +50,
+//     pageSize.width - 40, 
+//     logoHeight,
+//   ),
+//   brush:  PdfSolidBrush(
+//   PdfColor(0, 0, 0)
+
+//   ),
+//   format: PdfStringFormat(
+//     alignment: PdfTextAlignment.right,
+//     lineAlignment: PdfVerticalAlignment.top,
+//   ),
+// );
+//   document.template.top = header;
+
+// header.graphics.drawLine(
+//   PdfPen(PdfColor(100, 128, 120), width:.5 ), 
+//   Offset(40, headerHeight - 1),                // Start point (left, bottom of header)
+//   Offset(pageSize.width - 40, headerHeight - 1),  // End point (right, bottom of header)
+// );
+//   // ----------- FOOTER SETUP -----------
+//   const double footerHeight = 50;
+//   final PdfPageTemplateElement footer = PdfPageTemplateElement(Rect.fromLTWH(0, 0, pageSize.width, footerHeight));
+
+//   // Footer background color (optional)
+//   footer.graphics.drawRectangle(
+//     brush: PdfSolidBrush(PdfColor(230, 230, 250)),  // light lavender
+//     bounds: Rect.fromLTWH(0, 0, pageSize.width, footerHeight),
+//   );
+
+//   // Footer text centered
+//   footer.graphics.drawString(
+//     'Thank you for your business!',
+//     PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.italic),
+//     bounds: Rect.fromLTWH(0, 15, pageSize.width, 20),
+//     format: PdfStringFormat(alignment: PdfTextAlignment.center),
+//   );
+
+//   document.template.bottom = footer;
+
+//   // ----------- BACKGROUND WATERMARK -----------
+//   graphics.setTransparency(0.1);
+
+//   const double watermarkWidth = 300;
+//   const double watermarkHeight = 300;
+//   final double watermarkX = (pageSize.width - watermarkWidth) / 2;
+//   final double watermarkY = (pageSize.height - watermarkHeight) / 2;
+
+//   graphics.drawImage(logo, Rect.fromLTWH(watermarkX, watermarkY, watermarkWidth, watermarkHeight));
+
+//   graphics.setTransparency(1);
+
+//   // ----------- MAIN CONTENT -----------
+//   double y = headerHeight + 20;
+
+// // Header for section
+// graphics.drawString(
+//   'Patient Details',
+//   PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
+//   bounds: Rect.fromLTWH(40, y, 150, 20),
+//   brush: PdfSolidBrush(PdfColor(0, 180, 100)), // Green color (#00B464)
+// );
+
+// y += 25;
+
+// // Left column labels and values
+// final double labelX = 40;
+// final double valueX = 110;
+// final double columnY = y;
+// final double rowHeight = 20;
+
+// // Name row
+// graphics.drawString(
+//   'Name',
+//   PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+//   bounds: Rect.fromLTWH(labelX, columnY, 60, rowHeight),
+//   brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+// );
+// graphics.drawString(
+//   "${_nameController.text}",
+//   PdfStandardFont(PdfFontFamily.helvetica, 12),
+//   bounds: Rect.fromLTWH(valueX, columnY, 120, rowHeight),
+//   brush: PdfSolidBrush(PdfColor(154, 154, 154)), // Gray (#9A9A9A)
+// );
+
+// // Address row
+// graphics.drawString(
+//   'Address',
+//   PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+//   bounds: Rect.fromLTWH(labelX, columnY + rowHeight, 60, rowHeight),
+//   brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+// );
+// graphics.drawString(
+//   "${_selectedadress} ",
+//   PdfStandardFont(PdfFontFamily.helvetica, 12),
+//   bounds: Rect.fromLTWH(valueX, columnY + rowHeight, 120, rowHeight),
+//   brush: PdfSolidBrush(PdfColor(154, 154, 154)),
+// );
+
+// // WhatsApp row
+// graphics.drawString(
+//   'WhatsApp Number',
+//   PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+//   bounds: Rect.fromLTWH(labelX, columnY + 2 * rowHeight, 90, rowHeight),
+//   brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+// );
+// graphics.drawString(
+//   "${_phoneController.text}",
+//   PdfStandardFont(PdfFontFamily.helvetica, 12),
+//   bounds: Rect.fromLTWH(valueX, columnY + 2 * rowHeight, 120, rowHeight),
+//   brush: PdfSolidBrush(PdfColor(154, 154, 154)),
+// );
+
+// // Right column positions
+// final double rightLabelX = pageSize.width / 2 + 10;
+// final double rightValueX = rightLabelX + 90;
+
+// // Booked On
+// graphics.drawString(
+//   'Booked On',
+//   PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+//   bounds: Rect.fromLTWH(rightLabelX, columnY, 80, rowHeight),
+//   brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+// );
+// graphics.drawString(
+//   "bookedOnDate",
+//   PdfStandardFont(PdfFontFamily.helvetica, 12),
+//   bounds: Rect.fromLTWH(rightValueX, columnY, 70, rowHeight),
+//   brush: PdfSolidBrush(PdfColor(154, 154, 154)),
+// );
+// // Time next to Booked On Date
+// graphics.drawString(
+//   "bookedOnTime",
+//   PdfStandardFont(PdfFontFamily.helvetica, 12),
+//   bounds: Rect.fromLTWH(rightValueX + 75, columnY, 50, rowHeight),
+//   brush: PdfSolidBrush(PdfColor(154, 154, 154)),
+// );
+
+// // Treatment Date
+// graphics.drawString(
+//   'Treatment Date',
+//   PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+//   bounds: Rect.fromLTWH(rightLabelX, columnY + rowHeight, 90, rowHeight),
+//   brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+// );
+// graphics.drawString(
+//   "${_dateController.text}",
+//   PdfStandardFont(PdfFontFamily.helvetica, 12),
+//   bounds: Rect.fromLTWH(rightValueX, columnY + rowHeight, 70, rowHeight),
+//   brush: PdfSolidBrush(PdfColor(154, 154, 154)),
+// );
+
+// // Treatment Time
+// graphics.drawString(
+//   'Treatment Time',
+//   PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+//   bounds: Rect.fromLTWH(rightLabelX, columnY + 2 * rowHeight, 90, rowHeight),
+//   brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+// );
+// graphics.drawString(
+//   "${_timeController.text}",
+//   PdfStandardFont(PdfFontFamily.helvetica, 12),
+//   bounds: Rect.fromLTWH(rightValueX, columnY + 2 * rowHeight, 70, rowHeight),
+//   brush: PdfSolidBrush(PdfColor(154, 154, 154)),
+// );
+ 
+// y += 3 * rowHeight + 15; // Adjust y for next content
+
+
+
+
+
+
+
+ 
+//   graphics.drawString(
+//     'Treatments',
+//     sectionTitleFont,
+//     bounds: Rect.fromLTWH(40, y, pageSize.width - 80, 20),
+//   );
+//   y += 30;
+// final PdfColor headerGreen = PdfColor(0, 149, 94);
+// final PdfColor cellGray = PdfColor(154, 154, 154);
+//   final PdfGrid grid = PdfGrid();
+//   grid.columns.add(count:5);
+//   grid.headers.add(1);
+
+//   final PdfGridRow headerRow = grid.headers[0];
+  
+//   headerRow.cells[0].value = 'Treatment';
+//    headerRow.cells[1].value = 'Price';
+//   headerRow.cells[2].value = 'Males';
+//   headerRow.cells[3].value = 'Females';
+// headerRow.cells[4].value = 'total';
+//   for (var treatment in addTreatment) {
+//     final PdfGridRow row = grid.rows.add();
+//     row.cells[0].value = treatment['name'];
+//     row.cells[1].value = treatment['price'].toString();
+//     row.cells[2].value = treatment['male'].toString();
+//     row.cells[3].value = treatment['female'].toString();
+//     row.cells[4].value = treatment['total'].toString();
+//   }
+//  for (var i = 0; i < 5; i++) {
+//   headerRow.cells[i].style = PdfGridCellStyle(
+//     font: PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+//     textBrush: PdfSolidBrush(headerGreen),
+//     cellPadding: PdfPaddings(left: 5, right: 5, top: 6, bottom: 6),
+//     borders: PdfBorders(), // No borders
+//   );
+// }
+
+// for (var i = 0; i < 5; i++) {
+//   headerRow.cells[i].style = PdfGridCellStyle(
+//     font: PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+//     textBrush: PdfSolidBrush(headerGreen),
+//     cellPadding: PdfPaddings(left: 5, right: 5, top: 6, bottom: 6),
+//     borders: PdfBorders(), // No borders
+//   );
+// }
+
+//   grid.style = PdfGridStyle(
+//   cellPadding: PdfPaddings(left: 5, right: 5, top: 6, bottom: 6),
+//   font: PdfStandardFont(PdfFontFamily.helvetica, 12),
+//   // borderPen: PdfPens.transparent, // No outline/borders
+//   borderOverlapStyle: PdfBorderOverlapStyle.inside,
+// );
+  
+//   final PdfLayoutResult result = grid.draw(
+
+//     page: page,
+//     bounds: Rect.fromLTWH(40, y, pageSize.width -40, 0),
+//   )!;
+
+//   y = result.bounds.bottom + 30;
+
+//   graphics.drawString(
+//     'Total Amount: ₹${_totalAmountController.text}',
+//     sectionTitleFont,
+//     bounds: Rect.fromLTWH(40, y, pageSize.width - 80, 25),
+//   );
+
+//   // Save PDF bytes
+//   final pdfBytes = await document.save();
+//   document.dispose();
+
+//   // Save to file
+//   final directory = await getApplicationDocumentsDirectory();
+//   final filePath = '${directory.path}/invoice_${DateTime.now().millisecondsSinceEpoch}.pdf';
+//   final file = File(filePath);
+//   await file.writeAsBytes(pdfBytes);
+
+//   return filePath;
+// }
+
 Future<String> generateInvoicePDF() async {
-    final PdfDocument document = PdfDocument();
-    final PdfPage page = document.pages.add();
-    final Size pageSize = page.getClientSize();
-    final graphics = page.graphics;
+  final PdfDocument document = PdfDocument();
+  final PdfPage page = document.pages.add();
+  final Size pageSize = page.getClientSize();
+  final graphics = page.graphics;
 
-    final PdfFont titleFont = PdfStandardFont(PdfFontFamily.helvetica, 16, style: PdfFontStyle.bold);
-    final PdfFont regularFont = PdfStandardFont(PdfFontFamily.helvetica, 12);
+  // Fonts
+  final PdfFont titleFont = PdfStandardFont(PdfFontFamily.helvetica, 20, style: PdfFontStyle.bold);
+  final PdfFont sectionTitleFont = PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold);
+  final PdfFont regularFont = PdfStandardFont(PdfFontFamily.helvetica, 12);
 
-    graphics.drawString(
-      'Invoice for ${_nameController.text}',
-      titleFont,
-      bounds: Rect.fromLTWH(40, 50, pageSize.width - 80, 25),
+  // Load logo image bytes once
+  final ByteData logoBytes = await rootBundle.load('assets/images/Asset.png');
+  final ByteData sighnBytes = await rootBundle.load('assets/images/Vector 1.png');
+  final Uint8List logoList = logoBytes.buffer.asUint8List();
+  final Uint8List sighnList = sighnBytes.buffer.asUint8List();
+  final PdfBitmap logo = PdfBitmap(logoList);
+  final PdfBitmap sighn = PdfBitmap(sighnList);
+
+  // ----------- HEADER SETUP -----------
+  const double headerHeight = 120;
+  final PdfPageTemplateElement header = PdfPageTemplateElement(Rect.fromLTWH(0, 0, pageSize.width, headerHeight));
+
+  header.graphics.drawRectangle(
+    bounds: Rect.fromLTWH(0, 0, pageSize.width, headerHeight),
+  );
+
+  // Logo left-aligned in header
+  const double logoWidth = 80;
+  const double logoHeight = 80;
+  const double logoMarginLeft = 40;
+  final double logoPosY = (headerHeight - logoHeight) / 2;
+
+  header.graphics.drawImage(logo, Rect.fromLTWH(logoMarginLeft, logoPosY, logoWidth, logoHeight));
+
+  // Header text next to logo, right-aligned
+  header.graphics.drawString(
+    'Cheepunkal P.O. Kumarakom, kottayam, Kerala - 686563\ne-mail: unknown@gmail.com\nMob: +91 9876543210 | +91 9786543210',
+    PdfStandardFont(PdfFontFamily.helvetica, 8),
+    bounds: Rect.fromLTWH(0, logoPosY + 15, pageSize.width - 40, logoHeight),
+    brush: PdfSolidBrush(PdfColor(100, 128, 128)),
+    format: PdfStringFormat(
+      alignment: PdfTextAlignment.right,
+      lineAlignment: PdfVerticalAlignment.top,
+    ),
+  );
+  header.graphics.drawString(
+    'KUMARAKOM',
+    PdfStandardFont(PdfFontFamily.helvetica, 10),
+    bounds: Rect.fromLTWH(0, logoPosY, pageSize.width - 40, logoHeight),
+    brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+    format: PdfStringFormat(
+      alignment: PdfTextAlignment.right,
+      lineAlignment: PdfVerticalAlignment.top,
+    ),
+  );
+  header.graphics.drawString(
+    'GST No: 32AABCU9603R1ZW',
+    PdfStandardFont(PdfFontFamily.helvetica, 10),
+    bounds: Rect.fromLTWH(0, logoPosY + 50, pageSize.width - 40, logoHeight),
+    brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+    format: PdfStringFormat(
+      alignment: PdfTextAlignment.right,
+      lineAlignment: PdfVerticalAlignment.top,
+    ),
+  );
+  document.template.top = header;
+
+  // Divider line at the bottom of the header
+  header.graphics.drawLine(
+    PdfPen(PdfColor(100, 128, 120), width: .5),
+    Offset(40, headerHeight - 1),
+    Offset(pageSize.width - 40, headerHeight - 1),
+  );
+
+  // ----------- FOOTER SETUP -----------
+  const double footerHeight = 50;
+  final PdfPageTemplateElement footer = PdfPageTemplateElement(Rect.fromLTWH(0, 0, pageSize.width, footerHeight));
+
+  footer.graphics.drawRectangle(
+    brush: PdfSolidBrush(PdfColor(230, 230, 250)),
+    bounds: Rect.fromLTWH(0, 0, pageSize.width, footerHeight),
+  );
+
+  footer.graphics.drawString(
+    'Thank you for your business!',
+    PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.italic),
+    bounds: Rect.fromLTWH(0, 15, pageSize.width, 20),
+    format: PdfStringFormat(alignment: PdfTextAlignment.center),
+  );
+
+  document.template.bottom = footer;
+
+  // ----------- BACKGROUND WATERMARK -----------
+  graphics.setTransparency(0.1);
+  const double watermarkWidth = 300;
+  const double watermarkHeight = 300;
+  final double watermarkX = (pageSize.width - watermarkWidth) / 2;
+  final double watermarkY = (pageSize.height - watermarkHeight) / 2;
+
+  graphics.drawImage(logo, Rect.fromLTWH(watermarkX, watermarkY, watermarkWidth, watermarkHeight));
+  graphics.setTransparency(1);
+
+  // ----------- MAIN CONTENT -----------
+  double y = headerHeight + 20;
+
+  // Patient Details Title
+  graphics.drawString(
+    'Patient Details',
+    PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
+    bounds: Rect.fromLTWH(40, y, 150, 20),
+    brush: PdfSolidBrush(PdfColor(0, 180, 100)),
+  );
+  y += 25;
+
+  // Patient Info (two columns)
+  final double labelX = 40;
+  final double valueX = 110;
+  final double columnY = y;
+  final double rowHeight = 20;
+
+  graphics.drawString('Name', PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+    bounds: Rect.fromLTWH(labelX, columnY, 60, rowHeight), brush: PdfSolidBrush(PdfColor(0, 0, 0)));
+  graphics.drawString("${_nameController.text}", PdfStandardFont(PdfFontFamily.helvetica, 12),
+    bounds: Rect.fromLTWH(valueX, columnY, 120, rowHeight), brush: PdfSolidBrush(PdfColor(154, 154, 154)));
+
+  graphics.drawString('Address', PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+    bounds: Rect.fromLTWH(labelX, columnY + rowHeight, 60, rowHeight), brush: PdfSolidBrush(PdfColor(0, 0, 0)));
+  graphics.drawString("${_selectedadress} ", PdfStandardFont(PdfFontFamily.helvetica, 12),
+    bounds: Rect.fromLTWH(valueX, columnY + rowHeight, 120, rowHeight), brush: PdfSolidBrush(PdfColor(154, 154, 154)));
+
+  graphics.drawString('WhatsApp Number', PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+    bounds: Rect.fromLTWH(labelX, columnY + 2 * rowHeight, 90, rowHeight), brush: PdfSolidBrush(PdfColor(0, 0, 0)));
+  graphics.drawString("${_phoneController.text}", PdfStandardFont(PdfFontFamily.helvetica, 12),
+    bounds: Rect.fromLTWH(valueX, columnY + 2 * rowHeight, 120, rowHeight), brush: PdfSolidBrush(PdfColor(154, 154, 154)));
+
+  final double rightLabelX = pageSize.width / 2 + 10;
+  final double rightValueX = rightLabelX + 90;
+
+  graphics.drawString('Booked On', PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+    bounds: Rect.fromLTWH(rightLabelX, columnY, 80, rowHeight), brush: PdfSolidBrush(PdfColor(0, 0, 0)));
+  graphics.drawString("bookedOnDate", PdfStandardFont(PdfFontFamily.helvetica, 12),
+    bounds: Rect.fromLTWH(rightValueX, columnY, 70, rowHeight), brush: PdfSolidBrush(PdfColor(154, 154, 154)));
+  graphics.drawString("bookedOnTime", PdfStandardFont(PdfFontFamily.helvetica, 12),
+    bounds: Rect.fromLTWH(rightValueX + 75, columnY, 50, rowHeight), brush: PdfSolidBrush(PdfColor(154, 154, 154)));
+
+  graphics.drawString('Treatment Date', PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+    bounds: Rect.fromLTWH(rightLabelX, columnY + rowHeight, 90, rowHeight), brush: PdfSolidBrush(PdfColor(0, 0, 0)));
+  graphics.drawString("${_dateController.text}", PdfStandardFont(PdfFontFamily.helvetica, 12),
+    bounds: Rect.fromLTWH(rightValueX, columnY + rowHeight, 70, rowHeight), brush: PdfSolidBrush(PdfColor(154, 154, 154)));
+
+  graphics.drawString('Treatment Time', PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+    bounds: Rect.fromLTWH(rightLabelX, columnY + 2 * rowHeight, 90, rowHeight), brush: PdfSolidBrush(PdfColor(0, 0, 0)));
+  graphics.drawString("${_timeController.text}", PdfStandardFont(PdfFontFamily.helvetica, 12),
+    bounds: Rect.fromLTWH(rightValueX, columnY + 2 * rowHeight, 70, rowHeight), brush: PdfSolidBrush(PdfColor(154, 154, 154)));
+
+  y += 3 * rowHeight + 15;
+
+  // Treatments Table Section Title
+  graphics.drawString(
+    'Treatments',
+    sectionTitleFont,
+    bounds: Rect.fromLTWH(40, y, pageSize.width - 80, 20),
+  );
+  y += 30;
+graphics.drawLine(
+  PdfPen(PdfColor(154, 154, 154), width: 1, dashStyle: PdfDashStyle.dot, lineCap: PdfLineCap.square),
+  Offset(40, y),
+  Offset(pageSize.width - 40, y),
+);
+
+
+
+y += 10; 
+  // ---------------- TABLE WITHOUT LINES ------------------
+  final PdfColor headerGreen = PdfColor(0, 149, 94);
+  final PdfColor cellGray = PdfColor(154, 154, 154);
+  final PdfGrid grid = PdfGrid();
+  grid.columns.add(count: 5);
+  grid.headers.add(1);
+
+  final PdfGridRow headerRow = grid.headers[0];
+  headerRow.cells[0].value = 'Treatment';
+  headerRow.cells[1].value = 'Price';
+  headerRow.cells[2].value = 'Males';
+  headerRow.cells[3].value = 'Females';
+  headerRow.cells[4].value = 'Total';
+
+  // Set header style: green, bold, NO borders
+  for (var i = 0; i < 5; i++) {
+    headerRow.cells[i].style = PdfGridCellStyle(
+      font: PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+      textBrush: PdfSolidBrush(headerGreen),
+      cellPadding: PdfPaddings(left: 5, right: 5, top: 6, bottom: 6),
+      borders: PdfBorders(
+        left: PdfPens.transparent, top: PdfPens.transparent, right: PdfPens.transparent, bottom: PdfPens.transparent,
+      ),
     );
-
-    graphics.drawString(
-      'Phone: ${_phoneController.text}',
-      regularFont,
-      bounds: Rect.fromLTWH(40, 90, pageSize.width - 80, 20),
-    );
-
-    graphics.drawString(
-      'Address: ${_selectedadress ?? '-'}',
-      regularFont,
-      bounds: Rect.fromLTWH(40, 115, pageSize.width - 80, 20),
-    );
-
-    graphics.drawString(
-      'Branch: ${_selectedBranch?.name ?? '-'}',
-      regularFont,
-      bounds: Rect.fromLTWH(40, 140, pageSize.width - 80, 20),
-    );
-
-    double y = 170;
-
-    graphics.drawString(
-      'Treatments:',
-      titleFont,
-      bounds: Rect.fromLTWH(40, y, pageSize.width - 80, 20),
-    );
-
-    y += 30;
-
-    for (var treatment in addTreatment) {
-      graphics.drawString(
-        '${treatment['name']} (Males: ${treatment['male']}, Females: ${treatment['female']})',
-        regularFont,
-        bounds: Rect.fromLTWH(40, y, pageSize.width - 80, 20),
-      );
-      y += 25;
-    }
-
-    y += 10;
-    graphics.drawString(
-      'Total Amount: ₹${_totalAmountController.text}',
-      titleFont,
-      bounds: Rect.fromLTWH(40, y + 20, pageSize.width - 80, 25),
-    );
-
-    // Save PDF bytes
-    final bytes = await document.save();
-    document.dispose();
-
-    // Save to file
-    final directory = await getApplicationDocumentsDirectory();
-    final filePath = '${directory.path}/invoice_${DateTime.now().millisecondsSinceEpoch}.pdf';
-    final file = File(filePath);
-    await file.writeAsBytes(bytes);
-
-    return filePath;
   }
 
+  // Data rows: gray text, NO borders
+  for (var treatment in addTreatment) {
+    final PdfGridRow row = grid.rows.add();
+    row.cells[0].value = treatment['name'];
+    row.cells[1].value = treatment['price'].toString();
+    row.cells[2].value = treatment['male'].toString();
+    row.cells[3].value = treatment['female'].toString();
+    row.cells[4].value = treatment['total'].toString();
 
+    for (var i = 0; i < 5; i++) {
+      row.cells[i].style = PdfGridCellStyle(
+        font: PdfStandardFont(PdfFontFamily.helvetica, 12),
+        textBrush: PdfSolidBrush(cellGray),
+        cellPadding: PdfPaddings(left: 5, right: 5, top: 6, bottom: 6),
+        borders: PdfBorders(
+          left: PdfPens.transparent, top: PdfPens.transparent, right: PdfPens.transparent, bottom: PdfPens.transparent,
+        ),
+      );
+    }
+  }
+
+  // Grid style does NOT include borderPen in Flutter!
+  grid.style = PdfGridStyle(
+    cellPadding: PdfPaddings(left: 5, right: 5, top: 6, bottom: 6),
+    font: PdfStandardFont(PdfFontFamily.helvetica, 12),
+  );
+
+  final PdfLayoutResult result = grid.draw(
+    page: page,
+    bounds: Rect.fromLTWH(40, y, pageSize.width - 40, 0),
+  )!;
+
+  y = result.bounds.bottom + 10;
+graphics.drawLine(
+  PdfPen(PdfColor(154, 154, 154), width: 1, dashStyle: PdfDashStyle.dot, lineCap: PdfLineCap.square),
+  Offset(40, y),
+  Offset(pageSize.width - 40, y),
+);
+
+  graphics.drawString(
+    'Total Amount: ₹${_totalAmountController.text}',
+    sectionTitleFont,
+    bounds: Rect.fromLTWH(40, y, pageSize.width - 80, 25),
+  );
+// --- Amount Summary Variables (replace with your values) ----
+final totalAmount = "₹7,620";
+final discount = "₹500";
+final advance = "₹1,200";
+final balance = "₹5,920";
+
+// --- Positioning ---
+final summaryRight = pageSize.width - 60;
+final double summaryWidth = 150;
+// double y = ; // y should be where you want the summary box, e.g. after table
+
+// --- Amount Section (all right-aligned, black or bold where needed) ---
+graphics.drawString(
+  'Total Amount',
+  PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+  bounds: Rect.fromLTWH(summaryRight - summaryWidth, y, summaryWidth, 16),
+  format: PdfStringFormat(alignment: PdfTextAlignment.right),
+);
+graphics.drawString(
+  totalAmount,
+  PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+  bounds: Rect.fromLTWH(summaryRight, y, 55, 16),
+  format: PdfStringFormat(alignment: PdfTextAlignment.right),
+);
+y += 20;
+
+graphics.drawString(
+  'Discount',
+  PdfStandardFont(PdfFontFamily.helvetica, 12),
+  bounds: Rect.fromLTWH(summaryRight - summaryWidth, y, summaryWidth, 16),
+  format: PdfStringFormat(alignment: PdfTextAlignment.right),
+);
+graphics.drawString(
+  discount,
+  PdfStandardFont(PdfFontFamily.helvetica, 12),
+  bounds: Rect.fromLTWH(summaryRight, y, 55, 16),
+  format: PdfStringFormat(alignment: PdfTextAlignment.right),
+);
+y += 20;
+
+graphics.drawString(
+  'Advance',
+  PdfStandardFont(PdfFontFamily.helvetica, 12),
+  bounds: Rect.fromLTWH(summaryRight - summaryWidth, y, summaryWidth, 16),
+  format: PdfStringFormat(alignment: PdfTextAlignment.right),
+);
+graphics.drawString(
+  advance,
+  PdfStandardFont(PdfFontFamily.helvetica, 12),
+  bounds: Rect.fromLTWH(summaryRight, y, 55, 16),
+  format: PdfStringFormat(alignment: PdfTextAlignment.right),
+);
+y += 20;
+
+// --- Dashed line divider ---
+graphics.drawLine(
+  PdfPen(PdfColor(154, 154, 154), width: 1, dashStyle: PdfDashStyle.dash),
+  Offset(summaryRight - summaryWidth, y),
+  Offset(pageSize.width - 40, y),
+);
+y += 15;
+
+// --- BOLD Balance row ---
+graphics.drawString(
+  'Balance',
+  PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+  bounds: Rect.fromLTWH(summaryRight - summaryWidth, y, summaryWidth, 16),
+  format: PdfStringFormat(alignment: PdfTextAlignment.right),
+);
+graphics.drawString(
+  balance,
+  PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+  bounds: Rect.fromLTWH(summaryRight, y, 55, 16),
+  format: PdfStringFormat(alignment: PdfTextAlignment.right),
+);
+y += 40;
+
+// --- Thank you message ---
+graphics.drawString(
+  'Thank you for choosing us',
+  PdfStandardFont(PdfFontFamily.helvetica, 16, style: PdfFontStyle.bold),
+  bounds: Rect.fromLTWH(40, y, pageSize.width - 80, 22),
+  brush: PdfSolidBrush(PdfColor(0, 180, 100)), // Green
+  format: PdfStringFormat(alignment: PdfTextAlignment.right),
+);
+y += 22;
+
+// --- Subtitle (faint, smaller) ---
+graphics.drawString(
+  "Your well-being is our commitment, and we're honored\nyou've entrusted us with your health journey",
+  PdfStandardFont(PdfFontFamily.helvetica, 10),
+  bounds: Rect.fromLTWH(40, y, pageSize.width - 80, 36),
+  brush: PdfSolidBrush(PdfColor(154, 154, 154)),
+  format: PdfStringFormat(alignment: PdfTextAlignment.right),
+);
+y += 35;
+
+// --- Signature (as simple text or vector) ---
+graphics.drawImage(sighn, Rect.fromLTWH(pageSize.width - 100, y, 100, 50) );
+
+  // Save PDF bytes
+  final pdfBytes = await document.save();
+  document.dispose();
+
+  // Save to file
+  final directory = await getApplicationDocumentsDirectory();
+  final filePath = '${directory.path}/invoice_${DateTime.now().millisecondsSinceEpoch}.pdf';
+  final file = File(filePath);
+  await file.writeAsBytes(pdfBytes);
+
+  return filePath;
+}
 
 }
