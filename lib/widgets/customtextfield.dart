@@ -2,6 +2,11 @@
 
 import 'package:flutter/material.dart';
 
+
+
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; 
+
 class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final TextInputType keyboardType;
@@ -16,7 +21,8 @@ class CustomTextField extends StatefulWidget {
   final Color? errorBorderColor;
   final TextStyle? hintStyle;
   final TextStyle? textStyle;
-  final title ;
+  final String? title;
+  final bool isDatePicker; 
 
   const CustomTextField({
     Key? key,
@@ -32,7 +38,9 @@ class CustomTextField extends StatefulWidget {
     this.focusedBorderColor,
     this.errorBorderColor,
     this.hintStyle,
-    this.textStyle,  this.title,
+    this.textStyle,
+    this.title,
+    this.isDatePicker = false, 
   }) : super(key: key);
 
   @override
@@ -61,26 +69,48 @@ class _CustomTextFieldState extends State<CustomTextField> {
     });
   }
 
+ 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        widget.controller.text = DateFormat('yyyy-MM-dd').format(picked);
+        isTextEntered = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text( "${widget.title}",),
-        ),
-
+        if (widget.title != null)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              widget.title!,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
         Stack(
           alignment: Alignment.centerRight,
           children: [
-            
             TextFormField(
               controller: widget.controller,
               keyboardType: widget.keyboardType,
+              readOnly: widget.isDatePicker, // Make read-only if date picker is enabled
+              onTap: widget.isDatePicker
+                  ? () => _selectDate(context) // Trigger date picker on tap
+                  : null,
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Color.fromRGBO(217, 217, 217, 0.25),
+                fillColor: const Color.fromRGBO(217, 217, 217, 0.25),
                 prefixIcon: widget.prefixIcon != null
                     ? Icon(widget.prefixIcon)
                     : null,
@@ -93,14 +123,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(
-                    color: widget.focusedBorderColor ?? Color.fromRGBO(217, 217, 217, 0.25),
+                    color: widget.focusedBorderColor ??
+                        const Color.fromRGBO(217, 217, 217, 0.25),
                     width: 1,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(
-                    color: widget.borderColor ?? Color.fromRGBO(217, 217, 217, 0.25),
+                    color: widget.borderColor ??
+                        const Color.fromRGBO(217, 217, 217, 0.25),
                     width: 1,
                   ),
                 ),
@@ -118,7 +150,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     width: 1,
                   ),
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 hintText: widget.hintText,
                 hintStyle: widget.hintStyle,
               ),
