@@ -53,21 +53,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 class AuthService {
-  static const String _tokenKey = 'token';
+ 
 
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_tokenKey);
+    return prefs.getString(AppConstants.tokenKey);
   }
-
-  Future<void> saveToken(String token) async {
+ 
+  Future<void> saveToken(String token, String username) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_tokenKey, token);
+    await prefs.setString(AppConstants.tokenKey, token);
+    await prefs.setString(AppConstants.userKey, username);
   }
 
   Future<void> removeToken() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_tokenKey);
+    await prefs.remove(AppConstants.tokenKey);
   }
 
   Future<loginModel?> login(String username, String password) async {
@@ -88,7 +89,7 @@ class AuthService {
         final loginModel data = loginModel.fromJson(jsonData);
 
         if (data.token != null) {
-          await saveToken(data.token!);
+          await saveToken(data.token!,data.userDetails!.username.toString());
         }
 
         return data;

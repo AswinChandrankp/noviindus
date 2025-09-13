@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:noviindus/registration/models/branch_model.dart';
+import 'package:noviindus/registration/models/treatment_model.dart';
 
 class CustomDropdown extends StatelessWidget {
   final List<String> items;
@@ -98,6 +100,196 @@ class CustomDropdown extends StatelessWidget {
 
 
 
+class BranchesDropdown extends StatelessWidget {
+  final List<Branches> items;
+  final String title;
+  final Branches? selectedValue; 
+  final void Function(Branches?)? onChanged; 
+  final String? Function(Branches?)? validator; 
+  final bool isRequired;
+  final String hintText;
+  final IconData? prefixIcon;
+  final Color? borderColor;
+  final Color? focusedBorderColor;
+  final Color? errorBorderColor;
+  final TextStyle? hintStyle;
+  final TextStyle? textStyle;
+
+  const BranchesDropdown({
+    Key? key,
+    required this.items,
+    required this.title,
+    this.selectedValue,
+    this.onChanged,
+    this.validator,
+    this.isRequired = false,
+    required this.hintText,
+    this.prefixIcon,
+    this.borderColor,
+    this.focusedBorderColor,
+    this.errorBorderColor,
+    this.hintStyle,
+    this.textStyle,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(title, style: Theme.of(context).textTheme.bodyLarge),
+            if (isRequired)
+              const Text(
+                ' *',
+                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        DropdownButtonFormField<Branches>(
+          value: selectedValue,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: const Color.fromRGBO(217, 217, 217, 0.25),
+            prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+            hintText: hintText,
+            hintStyle: hintStyle,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: borderColor ?? Colors.grey.shade400),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: focusedBorderColor ?? Colors.blue, width: 2),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: errorBorderColor ?? Colors.red, width: 2),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: errorBorderColor ?? Colors.red, width: 2),
+            ),
+          ),
+          style: textStyle ?? Theme.of(context).textTheme.bodyLarge,
+          icon: const Icon(Icons.arrow_drop_down),
+          items: items.map((item) => DropdownMenuItem<Branches>(
+            value: item,
+            child: Text(item.name ?? '', style: textStyle),
+          )).toList(),
+          onChanged: onChanged,
+          validator: validator ??
+              (value) {
+                if (isRequired && value == null) {
+                  return 'Please select an option';
+                }
+                return null;
+              },
+          isExpanded: true,
+        ),
+      ],
+    );
+  }
+}
+
+
+class TreatmentsDropdown extends StatelessWidget {
+  final List<Treatment> items;
+  final String title;
+  final Treatment? selectedValue; 
+  final void Function(Treatment?)? onChanged; 
+  final String? Function(Treatment?)? validator; 
+  final bool isRequired;
+  final String hintText;
+  final IconData? prefixIcon;
+  final Color? borderColor;
+  final Color? focusedBorderColor;
+  final Color? errorBorderColor;
+  final TextStyle? hintStyle;
+  final TextStyle? textStyle;
+
+  const TreatmentsDropdown({
+    Key? key,
+    required this.items,
+    required this.title,
+    this.selectedValue,
+    this.onChanged,
+    this.validator,
+    this.isRequired = false,
+    required this.hintText,
+    this.prefixIcon,
+    this.borderColor,
+    this.focusedBorderColor,
+    this.errorBorderColor,
+    this.hintStyle,
+    this.textStyle,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(title, style: Theme.of(context).textTheme.bodyLarge),
+            if (isRequired)
+              const Text(
+                ' *',
+                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        DropdownButtonFormField<Treatment>(
+          value: selectedValue,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: const Color.fromRGBO(217, 217, 217, 0.25),
+            prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+            hintText: hintText,
+            hintStyle: hintStyle,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: borderColor ?? Colors.grey.shade400),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: focusedBorderColor ?? Colors.blue, width: 2),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: errorBorderColor ?? Colors.red, width: 2),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: errorBorderColor ?? Colors.red, width: 2),
+            ),
+          ),
+          style: textStyle ?? Theme.of(context).textTheme.bodyLarge,
+          icon: const Icon(Icons.arrow_drop_down),
+          items: items.map((item) => DropdownMenuItem<Treatment>(
+            value: item,
+            child: Text(item.name ?? '', style: textStyle),
+          )).toList(),
+          onChanged: onChanged,
+          validator: validator ??
+              (value) {
+                if (isRequired && value == null) {
+                  return 'Please select an option';
+                }
+                return null;
+              },
+          isExpanded: true,
+        ),
+      ],
+    );
+  }
+}
 
 
 

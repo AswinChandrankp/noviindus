@@ -58,7 +58,7 @@ class PatientProvider with ChangeNotifier {
   List<Patient> get patients => _patients;
 
   PatientProvider() {
-    getPatients(); // Fetch patients on initialization
+    getPatients(); 
   }
 
   Future<void> getPatients() async {

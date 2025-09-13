@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:noviindus/patient/provider/patient_provider.dart';
+import 'package:noviindus/registration/models/branch_model.dart';
 import 'package:noviindus/registration/provider/registration_provider.dart';
 import 'package:noviindus/registration/screens/addtreatment.dart';
 import 'package:noviindus/widgets/customButton.dart';
@@ -12,22 +13,25 @@ import 'package:noviindus/widgets/treatmentcard.dart';
 
 import 'package:provider/provider.dart';
 
-class Registerscreen extends StatelessWidget {
+class Registerscreen extends StatefulWidget {
   Registerscreen({super.key});
 
- 
+  @override
+  State<Registerscreen> createState() => _RegisterscreenState();
+}
 
+class _RegisterscreenState extends State<Registerscreen> {
   @override
   Widget build(BuildContext context) {
-    return Consumer <registrationProvider>(
+    return Consumer <RegistrationProvider>(
       builder: (context, registrationcontroller, child) {
-           final items = registrationcontroller.branches;
-       List<String> NewBranchData = [];
+          //  final items = registrationcontroller.branches;
+      //  List<String> NewBranchData = [];
         
-                      for (int i = 0; i < items.length; i++) {
-                        final data = items.elementAt(i).name;
-                        NewBranchData.add(data.toString());
-                      }
+      //                 for (int i = 0; i < items.length; i++) {
+      //                   final data = items.elementAt(i).name;
+      //                   NewBranchData.add(data.toString());
+      //                 }
         return Scaffold(
           appBar: AppBar(
             elevation: 0,
@@ -76,44 +80,43 @@ class Registerscreen extends StatelessWidget {
                     title: "Whatsapp Number",
                   ),
                   CustomTextField(
-                    controller: registrationcontroller.addressController,
+                    controller: registrationcontroller.detailsController,
                     keyboardType: TextInputType.streetAddress,
                     hintText: "Enter Your full address",
                     title: "Address",
                   ),
                   CustomDropdown(
-                    items: ["Kozhikode","Palakkad","Thrissur","Kannur"], 
+                    selectedValue: registrationcontroller.selectedadress ,
+                    items: registrationcontroller.alladress, 
                     hintText: "Choose Your Location", 
                     title: "Location",
                     onChanged: (value) {
                       print('Selected value: $value');
-                      // registrationcontroller.setLocation(value.toString());
+
+                      registrationcontroller.setAddress(value!);
                     },
 
                   ),
                
         
-                       CustomDropdown(
-                        items: NewBranchData.toList() , 
+                       BranchesDropdown(
+                        selectedValue: registrationcontroller.selectedBranch,
+                        items: registrationcontroller.branches , 
                         hintText: "Choose Branch",
                         title: "Branch",
-                        onChanged: (value) {
-                        
-                          print('Selected value: $value');
-                          registrationcontroller.setBranch(value.toString());
+                        onChanged: (Branches ) {
+                          print('Selected value: ${Branches!.name}');
+                          registrationcontroller.setBranch(Branches!);
+                          
                         },
                       ),
-                    // },
-                  // ),
-                  // Consumer<treatmentProvider>(
-                  //   builder: (context, treatmentProvider, child) {
-                  //     return 
+                 
                       ListView.separated(
-                        itemCount: registrationcontroller.addtreatment.length,
+                        itemCount: registrationcontroller.addTreatment.length,
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          final treatment = registrationcontroller.addtreatment[index];
+                          final treatment = registrationcontroller.addTreatment[index];
                           
                           return TreatmentCard(
                             treatmentname: treatment['treatment'],
@@ -124,7 +127,7 @@ class Registerscreen extends StatelessWidget {
         
                             delete: () {
                               // Provider.of<addtreatmentcontroller>(context, listen:false).removeTreatment(index);
-                              registrationcontroller.removeTreatment(index);
+                              registrationcontroller.deleteTreatment(index);
                               
                             }
         
@@ -185,9 +188,10 @@ class Registerscreen extends StatelessWidget {
                     hintText: "Balance Amount",
                     title: "Balance",),
                   CustomTextField(
+
                     suffixIcon: Icons.calendar_month,
                     isDatePicker: true,
-                    controller: TextEditingController(), keyboardType: TextInputType.datetime, hintText: "", title: "Treatment Date",),
+                    controller: registrationcontroller.dateController, keyboardType: TextInputType.datetime, hintText: "", title: "Treatment Date",),
                     
            DropdownTimePicker (
                 selectedValue: registrationcontroller.timeController.text,
@@ -202,7 +206,9 @@ class Registerscreen extends StatelessWidget {
                     children: [
                       Expanded(child: CustomElevatedButton(text: "Saved", onPressed: () {
                         print("saved");
-                        // registrationcontroller.registerPatient();
+                        registrationcontroller.register(
+                          context
+                        );
                       }, textColor: Colors.white,)),
                     ],
                   ),

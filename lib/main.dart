@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<PatientProvider>(
           create: (_) => PatientProvider(),
         ),
-        ChangeNotifierProvider<registrationProvider>(
-          create: (_) => registrationProvider(),
+        ChangeNotifierProvider<RegistrationProvider>(
+          create: (_) => RegistrationProvider(),
         ),
       ],
 

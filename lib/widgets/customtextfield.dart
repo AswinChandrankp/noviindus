@@ -1,9 +1,5 @@
 
-
 import 'package:flutter/material.dart';
-
-
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; 
 
@@ -79,7 +75,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     );
     if (picked != null) {
       setState(() {
-        widget.controller.text = DateFormat('yyyy-MM-dd').format(picked);
+        widget.controller.text = DateFormat('dd/MM/yyyy').format(picked);
         isTextEntered = true;
       });
     }
