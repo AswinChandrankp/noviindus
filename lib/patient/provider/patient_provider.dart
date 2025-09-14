@@ -9,44 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 
-
-
-// class PatientProvider with ChangeNotifier {
-//   final _patientService = PatientService ();
-
-//   bool get isLoading => _isLoading;
-//   bool _isLoading = false;
-//   // final itemlenth = 0;
-//   List<Patientmodel> _patients = [];
-//   List<Patientmodel> get patients => _patients;
-
-
-
-//   Future<void> getPatients() async {
-//     _isLoading = true;
-//     notifyListeners();
-
-//     try {
-//       final patients = await _patientService.getPatiens();
-//       print(patients);
-//       _patients = patients;
-//       print("Success");
-//     } catch (e) {
-//       print("Error while fetching patients: $e");
-//       _patients = [];
-//     } finally {
-//       _isLoading = false;
-//       notifyListeners();
-//     }
-//   }
-
- 
-// }
-
-
-
-import 'package:flutter/foundation.dart';
-
 class PatientProvider with ChangeNotifier {
   final _patientService = PatientService();
   bool _isLoading = false;

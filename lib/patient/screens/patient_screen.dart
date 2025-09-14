@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:noviindus/patient/provider/patient_provider.dart';
 import 'package:noviindus/patient/screens/patient_listview.dart';
-import 'package:noviindus/patient/screens/registration_screen.dart';
+import 'package:noviindus/registration/screens/registration_screen.dart';
 import 'package:noviindus/widgets/customButton.dart';
 import 'package:provider/provider.dart';
 
@@ -79,10 +79,11 @@ class _PatientScreenState extends State<PatientScreen> {
         scrolledUnderElevation: 0,
         backgroundColor: Colors.white,
         elevation: 0,
+        
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context);
+        
           },
         ),
         actions: [

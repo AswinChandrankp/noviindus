@@ -197,7 +197,9 @@ class _RegisterscreenState extends State<Registerscreen> {
                     children: [
                       Expanded(
                           child: CustomElevatedButton(
-                        text: "+Add Treatment",
+                        text: "+ Add Treatment",
+                        fontWeight: FontWeight.w500,
+                        fontsize: 16,
                         onPressed: () {
                           showDialog(
                             context: context,
@@ -234,10 +236,12 @@ class _RegisterscreenState extends State<Registerscreen> {
                     controller: registrationcontroller.discountAmountController,
                     keyboardType: TextInputType.number,
                     hintText: " Enter Discount Amount",
+
                        hintStyle: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.normal,
                     ),
+
                     title: "Discount Amount",),
                      SizedBox(
                     height: 10,
@@ -245,6 +249,7 @@ class _RegisterscreenState extends State<Registerscreen> {
                   PaymentOptionsWidget(onChanged: (value) {
                     print(value);
                     registrationcontroller.paymentController.text = value.toString();
+                    
                   },),
                    SizedBox(
                     height: 10,
@@ -288,9 +293,11 @@ class _RegisterscreenState extends State<Registerscreen> {
                   Row(
                     children: [
                       Expanded(child: CustomElevatedButton(
+                        padding: const EdgeInsets.all(15),
                         borderRadius:9,
                         // fontsize: ,
                         fontWeight: FontWeight.bold,
+                        fontsize: 18,
                         text: "Save", onPressed: () {
                         print("save");
                         registrationcontroller.register(

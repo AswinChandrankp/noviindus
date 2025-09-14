@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:noviindus/constants.dart';
 import 'package:noviindus/registration/models/branch_model.dart';
 import 'package:noviindus/registration/models/treatment_model.dart';
@@ -218,7 +219,7 @@ void updateAmounts() {
           ));
       
           CustomSnackbar.show(context: context, message: "Invoice  saved at: $filePath", isSucces: true);
-          clearAllData();
+          // clearAllData();
         } catch (e) {
          
              CustomSnackbar.show(context: context, message: "Failed to generate PDF: $e", isSucces: false);
@@ -553,22 +554,22 @@ void updateAmounts() {
       brush: pw.PdfSolidBrush(pw.PdfColor(0, 0, 0)),
     );
     graphics.drawString(
-      DateTime.now().toString().split('.')[0],
-      pw.PdfStandardFont(pw.PdfFontFamily.helvetica, 12),
-      bounds: pw.Rect.fromLTWH(rightValueX, columnY, 120, rowHeight),
-      brush: pw.PdfSolidBrush(pw.PdfColor(154, 154, 154)),
-    );
+    DateFormat('dd/MM/yyyy | hh:mma').format(DateTime.now()),
+    pw.PdfStandardFont(pw.PdfFontFamily.helvetica, 12),
+    bounds: pw.Rect.fromLTWH(rightValueX + 10, columnY, 120, rowHeight),
+    brush: pw.PdfSolidBrush(pw.PdfColor(154, 154, 154)),
+  );
 
     graphics.drawString(
       'Treatment Date',
       pw.PdfStandardFont(pw.PdfFontFamily.helvetica, 12, style: pw.PdfFontStyle.bold),
-      bounds: pw.Rect.fromLTWH(rightLabelX, columnY + rowHeight, 90, rowHeight),
+      bounds: pw.Rect.fromLTWH(rightLabelX , columnY + rowHeight, 90, rowHeight),
       brush: pw.PdfSolidBrush(pw.PdfColor(0, 0, 0)),
     );
     graphics.drawString(
       _dateController.text,
       pw.PdfStandardFont(pw.PdfFontFamily.helvetica, 12),
-      bounds: pw.Rect.fromLTWH(rightValueX, columnY + rowHeight, 70, rowHeight),
+      bounds: pw.Rect.fromLTWH(rightValueX+ 10, columnY + rowHeight, 70, rowHeight),
       brush: pw.PdfSolidBrush(pw.PdfColor(154, 154, 154)),
     );
 
@@ -580,8 +581,9 @@ void updateAmounts() {
     );
     graphics.drawString(
       _timeController.text,
+      
       pw.PdfStandardFont(pw.PdfFontFamily.helvetica, 12),
-      bounds: pw.Rect.fromLTWH(rightValueX, columnY + 2 * rowHeight, 70, rowHeight),
+      bounds: pw.Rect.fromLTWH(rightValueX+ 10, columnY + 2 * rowHeight, 70, rowHeight),
       brush: pw.PdfSolidBrush(pw.PdfColor(154, 154, 154)),
     );
 

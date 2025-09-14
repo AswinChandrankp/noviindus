@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:noviindus/auth/service/loginservice.dart';
+import 'package:noviindus/auth/service/auth_service.dart';
 import 'package:noviindus/constants.dart';
 import 'package:noviindus/patient/model/patient_model.dart';
 import 'package:http/http.dart' as http;

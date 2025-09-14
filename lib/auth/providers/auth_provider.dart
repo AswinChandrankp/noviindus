@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:noviindus/auth/service/loginservice.dart';
+import 'package:noviindus/auth/model/login_model.dart';
+import 'package:noviindus/auth/service/auth_service.dart';
+import 'package:noviindus/patient/screens/patient_screen.dart';
+import 'package:noviindus/widgets/customSnackbar.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
+
+  bool _isLoading = false; 
+  bool get isLoading => _isLoading;
 
   String? _token;
   String? get token => _token;
@@ -12,13 +18,22 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> login(String username, String password) async {
-    final loginModel = await _authService.login(username, password);
-    if (loginModel != null) {
-      _token = loginModel.token;
+  Future<void> login(BuildContext context, String username, String password) async {
+    _isLoading = true;
+     notifyListeners();
+    final loginModel? response = await _authService.login(username, password);
+    if (response!.status!) {
+      _token = response.token;
+      print("login succefully");
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => PatientScreen()));
+      _isLoading = false;
       notifyListeners();
+    } else {
+      CustomSnackbar.show(context: context, message: response.message.toString(), isSucces: false);
     }
-    // return data;
+   _isLoading = false;
+    notifyListeners();
+ 
   }
 
   Future<void> logout() async {

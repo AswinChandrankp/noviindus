@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:noviindus/auth/service/loginservice.dart';
+import 'package:noviindus/auth/service/auth_service.dart';
 import 'package:noviindus/constants.dart';
 import 'package:noviindus/registration/models/branch_model.dart';
 import 'package:noviindus/registration/models/treatment_model.dart';
