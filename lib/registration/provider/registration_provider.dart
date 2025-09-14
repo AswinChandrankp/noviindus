@@ -219,7 +219,7 @@ void updateAmounts() {
           ));
       
           CustomSnackbar.show(context: context, message: "Invoice  saved at: $filePath", isSucces: true);
-          // clearAllData();
+          clearAllData();
         } catch (e) {
          
              CustomSnackbar.show(context: context, message: "Failed to generate PDF: $e", isSucces: false);
