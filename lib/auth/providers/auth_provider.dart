@@ -24,7 +24,9 @@ class AuthProvider extends ChangeNotifier {
     final loginModel? response = await _authService.login(username, password);
     if (response!.status!) {
       _token = response.token;
-      print("login succefully");
+      debugPrint("login succefully");
+      debugPrint(response.message.toString());
+     
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => PatientScreen()));
       _isLoading = false;
       notifyListeners();

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:noviindus/auth/model/login_model.dart';
 import 'package:noviindus/constants.dart';
+import 'package:noviindus/widgets/customSnackbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // class loginService {
@@ -71,7 +72,7 @@ class AuthService {
     await prefs.remove(AppConstants.tokenKey);
   }
 
-  Future<loginModel?> login(String username, String password) async {
+  Future<loginModel?> login(  String username, String password) async {
     try {
       var request = http.MultipartRequest(
         'POST',
@@ -97,7 +98,9 @@ class AuthService {
         return null;
       }
     } catch (e) {
-      // Optionally log the error
+      if (e is http.ClientException) {
+      throw Exception('Network error during login: ${e.message}');
+    }
       return null;
     }
   }

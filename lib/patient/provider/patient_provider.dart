@@ -1,11 +1,8 @@
-import 'dart:convert';
-import 'package:noviindus/auth/providers/auth_provider.dart';
+
 import 'package:noviindus/patient/model/patient_model.dart';
 import 'package:noviindus/patient/serviece/patient_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 
 
