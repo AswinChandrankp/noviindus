@@ -174,7 +174,7 @@ class Addtreatment extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            registrationprovider.femaleCount;
+                            registrationprovider.incrementFemaleCount();
                           },
                           child: Card(
                             color: Color.fromARGB(255, 0, 104, 55),

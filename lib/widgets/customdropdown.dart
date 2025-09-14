@@ -42,7 +42,10 @@ class CustomDropdown extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(title, style: Theme.of(context).textTheme.bodyLarge),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(title, style: Theme.of(context).textTheme.bodyLarge),
+            ),
             if (isRequired)
               const Text(
                 ' *',
@@ -55,26 +58,26 @@ class CustomDropdown extends StatelessWidget {
           value: selectedValue,
           decoration: InputDecoration(
             filled: true,
-            fillColor: const Color.fromRGBO(217, 217, 217, 0.25),
+            fillColor: const  Color.fromRGBO(217, 217, 217, 0.25),
             prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
             hintText: hintText,
             hintStyle: hintStyle,
             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: borderColor ?? Colors.grey.shade400),
+              borderSide: BorderSide(color: borderColor ?? const Color.fromRGBO(217, 217, 217, 0.25)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: focusedBorderColor ?? Colors.blue, width: 2),
+              borderSide: BorderSide(color: focusedBorderColor ?? const Color.fromRGBO(217, 217, 217, 0.25), width: 1),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: errorBorderColor ?? Colors.red, width: 2),
+              borderSide: BorderSide(color: errorBorderColor ?? const Color.fromRGBO(217, 217, 217, 0.25), width: 1),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: errorBorderColor ?? Colors.red, width: 2),
+              borderSide: BorderSide(color: errorBorderColor ?? const Color.fromRGBO(217, 217, 217, 0.25), width: 1),
             ),
           ),
           style: textStyle ?? Theme.of(context).textTheme.bodyLarge,
@@ -139,7 +142,10 @@ class BranchesDropdown extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(title, style: Theme.of(context).textTheme.bodyLarge),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(title, style: Theme.of(context).textTheme.bodyLarge),
+            ),
             if (isRequired)
               const Text(
                 ' *',
@@ -159,19 +165,19 @@ class BranchesDropdown extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: borderColor ?? Colors.grey.shade400),
+              borderSide: BorderSide(color: borderColor ?? const Color.fromRGBO(217, 217, 217, 0.25)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: focusedBorderColor ?? Colors.blue, width: 2),
+              borderSide: BorderSide(color: focusedBorderColor ?? const Color.fromRGBO(217, 217, 217, 0.25), width: 2),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: errorBorderColor ?? Colors.red, width: 2),
+              borderSide: BorderSide(color: errorBorderColor ?? const Color.fromRGBO(217, 217, 217, 0.25), width: 2),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: errorBorderColor ?? Colors.red, width: 2),
+              borderSide: BorderSide(color: errorBorderColor ??const Color.fromRGBO(217, 217, 217, 0.25), width: 2),
             ),
           ),
           style: textStyle ?? Theme.of(context).textTheme.bodyLarge,
@@ -374,16 +380,16 @@ class _DropdownTimePickerState extends State<DropdownTimePicker> {
     super.dispose();
   }
 
-  // Format the selected time for display (supports 12/24-hour)
+
   String _formatTime(TimeOfDay time) {
     final now = DateTime.now();
     final dateTime = DateTime(now.year, now.month, now.day, time.hour, time.minute);
     return widget.use24HourFormat
-        ? DateFormat('HH:mm').format(dateTime) // e.g., "15:30"
-        : DateFormat.jm().format(dateTime); // e.g., "3:30 PM"
+        ? DateFormat('HH:mm').format(dateTime) 
+        : DateFormat.jm().format(dateTime);
   }
 
-  // Parse selectedValue to TimeOfDay for initial time picker value
+
   TimeOfDay? _parseInitialTime() {
     if (widget.selectedValue == null) return null;
     try {
@@ -395,7 +401,7 @@ class _DropdownTimePickerState extends State<DropdownTimePicker> {
     }
   }
 
-  // Update error text based on validation
+ 
   void _updateErrorText() {
     if (widget.validator != null) {
       _errorText = widget.validator!(widget.selectedValue);
@@ -406,7 +412,7 @@ class _DropdownTimePickerState extends State<DropdownTimePicker> {
     }
   }
 
-  // Show time picker dialog
+
   Future<void> _showTimePicker(BuildContext context) async {
     final initialTime = _parseInitialTime() ?? TimeOfDay.now();
     final picked = await showTimePicker(
@@ -418,10 +424,7 @@ class _DropdownTimePickerState extends State<DropdownTimePicker> {
           data: Theme.of(context).copyWith(
             timePickerTheme: TimePickerThemeData(
               backgroundColor: Colors.white,
-              // Uncomment and customize as needed:
-              // hourMinuteTextStyle: widget.textStyle ?? Theme.of(context).textTheme.bodyLarge,
-              // dialHandColor: widget.focusedBorderColor ?? Colors.blue,
-              // entryModeIconColor: widget.focusedBorderColor ?? Colors.blue,
+          
             ),
           ),
           child: child!,
@@ -442,7 +445,6 @@ class _DropdownTimePickerState extends State<DropdownTimePicker> {
     }
   }
 
-  // Input decoration for the time picker fields
   InputDecoration _buildInputDecoration(BuildContext context, String fieldType) {
     return InputDecoration(
       filled: true,
@@ -453,21 +455,21 @@ class _DropdownTimePickerState extends State<DropdownTimePicker> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: widget.borderColor ?? Colors.grey.shade400),
+        borderSide: BorderSide(color: widget.borderColor ?? const Color.fromRGBO(217, 217, 217, 0.25),),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: widget.focusedBorderColor ?? Colors.blue, width: 2),
+        borderSide: BorderSide(color: widget.focusedBorderColor ??const Color.fromRGBO(217, 217, 217, 0.25), width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: widget.errorBorderColor ?? Colors.red, width: 2),
+        borderSide: BorderSide(color: widget.errorBorderColor ?? const Color.fromRGBO(217, 217, 217, 0.25), width: 2),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: widget.errorBorderColor ?? Colors.red, width: 2),
+        borderSide: BorderSide(color: widget.errorBorderColor ??const Color.fromRGBO(217, 217, 217, 0.25), width: 2),
       ),
-      errorText: fieldType == 'hour' ? _errorText : null, // Show error only on hour field
+      errorText: fieldType == 'hour' ? _errorText : null, 
     );
   }
 

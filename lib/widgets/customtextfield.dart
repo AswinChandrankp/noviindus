@@ -91,7 +91,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               widget.title!,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 16),
             ),
           ),
         Stack(
@@ -100,9 +100,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
             TextFormField(
               controller: widget.controller,
               keyboardType: widget.keyboardType,
-              readOnly: widget.isDatePicker, // Make read-only if date picker is enabled
+              readOnly: widget.isDatePicker, 
               onTap: widget.isDatePicker
-                  ? () => _selectDate(context) // Trigger date picker on tap
+                  ? () => _selectDate(context)
                   : null,
               decoration: InputDecoration(
                 filled: true,
@@ -164,7 +164,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 });
                 return null;
               },
-              style: widget.textStyle,
+            style: widget.textStyle ,
             ),
             if (widget.isRequired && !isTextEntered)
               const Positioned(

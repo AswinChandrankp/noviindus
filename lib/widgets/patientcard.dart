@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class PatientCard extends StatelessWidget {
-  final cardnumber;
-  final patientname;
-  final package;
-  final ontap;
-  const PatientCard(
-      {super.key, this.cardnumber, this.patientname, this.package, this.ontap});
+  final int cardnumber;
+  final String patientname;
+  final String package;
+  final VoidCallback? ontap; 
+  final String? date; 
+  final String? name; 
+
+  const PatientCard({
+    super.key,
+    required this.cardnumber,
+    required this.patientname,
+    required this.package,
+    this.ontap,
+    this.date,
+    this.name,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Container(
         height: 166,
         decoration: BoxDecoration(
-          color: Color.fromRGBO(241, 241, 241, 1.0),
+          color: const Color.fromRGBO(241, 241, 241, 1.0),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
@@ -25,13 +36,20 @@ class PatientCard extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    "${cardnumber}.",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    "$cardnumber.",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  SizedBox(width: 10),
-                  Text("${patientname}",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                  const SizedBox(width: 10),
+                  Text(
+                    patientname,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -40,51 +58,67 @@ class PatientCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
-                    "Package: ${package}",
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w300,
-                        color: Color.fromRGBO(0, 104, 55, 1)),
+                    "Package: $package",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w300,
+                      color: Color.fromRGBO(0, 104, 55, 1),
+                    ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.calendar_month,
                         color: Color.fromRGBO(242, 78, 30, 1),
                         size: 15,
                       ),
-                      Text("Date: "),
-                      Icon(
+                      const SizedBox(width: 5),
+                      Text(
+                        date ?? "N/A", // Fallback for null date
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      const Icon(
                         Icons.group,
                         color: Color.fromRGBO(242, 78, 30, 1),
                         size: 15,
                       ),
-                      Text("name"),
+                      const SizedBox(width: 5),
+                      Text(
+                        name ?? "N/A", // Fallback for null name
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
-
-            Divider(),
+            const Divider(),
             Expanded(
               child: InkWell(
-                onTap: ontap,
+                onTap: ontap, // Safe, as onTap accepts null
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Text(
-                      "View Details",
+                    const Text(
+                      "View Booking Details",
                       style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.black),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.black,
+                      ),
                     ),
-                    SizedBox(width: 10),
-                    Icon(
+                    const SizedBox(width: 10),
+                    const Icon(
                       Icons.arrow_forward_ios,
                       color: Color.fromRGBO(0, 104, 55, 1),
                       size: 15,

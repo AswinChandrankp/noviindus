@@ -20,7 +20,7 @@ class TreatmentCard extends StatelessWidget {
     return Container(
       height: 99,
       decoration: BoxDecoration(
-        color: Color.fromRGBO(241, 241, 241, 1.0),
+        color: const Color.fromRGBO(217, 217, 217, 0.25),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -43,17 +43,32 @@ class TreatmentCard extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          "male",
+                          "Male",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
+                            color: Color.fromARGB(255, 0, 104, 55)
                           ),
                         ),
-                        Text(
-                          "$malecount",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
+                        SizedBox(width: 10,),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          )
+                          ,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 15, right: 15,top: 0,bottom: 0),
+                            child: Center(
+                              child: Text(
+                                "$malecount",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color.fromARGB(255, 0, 104, 55)
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -61,17 +76,31 @@ class TreatmentCard extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          "female",
+                          "Female",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
+                            color: Color.fromARGB(255, 0, 104, 55)
                           ),
-                        ),
-                        Text(
-                          "$femalecount",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
+                        ), SizedBox(width: 10,),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          )
+                          ,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 15, right: 15,top: 0,bottom: 0),
+                            child: Center(
+                              child: Text(
+                                "$femalecount",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color.fromARGB(255, 0, 104, 55)
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -84,8 +113,14 @@ class TreatmentCard extends StatelessWidget {
 
           Column(
             children: [
-              IconButton(onPressed: delete, icon: Icon(Icons.close)),
-              IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+              Container(
+                
+                child: IconButton(onPressed: delete, icon: Icon(Icons.close),color: Colors.white ,style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red[100]!),
+                  padding:  MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.all(0)),
+
+                ),)),
+              IconButton(onPressed: () {}, icon: Icon(Icons.edit,size: 20,)),
             ],
           ),
         ],

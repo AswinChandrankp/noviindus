@@ -25,16 +25,37 @@ class _RegisterscreenState extends State<Registerscreen> {
   Widget build(BuildContext context) {
     return Consumer <RegistrationProvider>(
       builder: (context, registrationcontroller, child) {
-          //  final items = registrationcontroller.branches;
-      //  List<String> NewBranchData = [];
-        
-      //                 for (int i = 0; i < items.length; i++) {
-      //                   final data = items.elementAt(i).name;
-      //                   NewBranchData.add(data.toString());
-      //                 }
+   
         return Scaffold(
+          backgroundColor:    Colors.white,
           appBar: AppBar(
+              backgroundColor: Colors.white,
+            scrolledUnderElevation: 0,
             elevation: 0,
+             actions: [
+          Stack(
+            children: [
+              IconButton(
+                icon: Icon(Icons.notifications_outlined, 
+                          color: Colors.black, 
+                          size: 28),
+                onPressed: () {},
+              ),
+              Positioned(
+                right: 13,
+                top: 13,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
             bottom: PreferredSize(
               preferredSize: Size(MediaQuery.of(context).size.width, 30),
               child: Column(
@@ -44,7 +65,7 @@ class _RegisterscreenState extends State<Registerscreen> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Register Now",
+                        "Register",
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w600,
@@ -72,24 +93,49 @@ class _RegisterscreenState extends State<Registerscreen> {
                     keyboardType: TextInputType.name,
                     hintText: "Enter Your Full Name",
                     title: "Name",
+                    hintStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
                   ),
                   CustomTextField(
                     controller: registrationcontroller.phoneController,
                     keyboardType: TextInputType.number,
                     hintText: " Enter Your Whatsapp Number",
                     title: "Whatsapp Number",
+                     hintStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                    )
+                  ),
+                    SizedBox(
+                    height: 10,
                   ),
                   CustomTextField(
                     controller: registrationcontroller.detailsController,
                     keyboardType: TextInputType.streetAddress,
                     hintText: "Enter Your full address",
                     title: "Address",
+                     hintStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                    )
+                  ),
+                    SizedBox(
+                    height: 10,
                   ),
                   CustomDropdown(
-                    selectedValue: registrationcontroller.selectedadress ,
+                    selectedValue: registrationcontroller.selectedadress,
                     items: registrationcontroller.alladress, 
                     hintText: "Choose Your Location", 
                     title: "Location",
+                     hintStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                    ),
                     onChanged: (value) {
                       print('Selected value: $value');
 
@@ -98,11 +144,18 @@ class _RegisterscreenState extends State<Registerscreen> {
 
                   ),
                
-        
+         SizedBox(
+                    height: 10,
+                  ),
                        BranchesDropdown(
                         selectedValue: registrationcontroller.selectedBranch,
                         items: registrationcontroller.branches , 
                         hintText: "Choose Branch",
+                         hintStyle: TextStyle(
+                      fontSize: 14,
+                      
+                      fontWeight: FontWeight.normal,
+                    ),
                         title: "Branch",
                         onChanged: (Branches ) {
                           print('Selected value: ${Branches!.name}');
@@ -110,7 +163,9 @@ class _RegisterscreenState extends State<Registerscreen> {
                           
                         },
                       ),
-                 
+                  SizedBox(
+                    height: 10,
+                  ),
                       ListView.separated(
                         itemCount: registrationcontroller.addTreatment.length,
                         shrinkWrap: true,
@@ -119,7 +174,7 @@ class _RegisterscreenState extends State<Registerscreen> {
                           final treatment = registrationcontroller.addTreatment[index];
                           
                           return TreatmentCard(
-                            treatmentname: treatment['treatment'],
+                            treatmentname: treatment['name'],
                             malecount: treatment['male'],
                             femalecount: treatment['female'],
                             
@@ -166,33 +221,58 @@ class _RegisterscreenState extends State<Registerscreen> {
                   CustomTextField(
                     controller: registrationcontroller.totalAmountController,
                     keyboardType: TextInputType.number,
-                    hintText: "Enter Amount",
-                    title: "Amount",),
+                    hintText: " Enter Total Amount",
+                       hintStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    title: "Total Amount",),
+                     SizedBox(
+                    height: 10,
+                  ),
                   CustomTextField(
                     controller: registrationcontroller.discountAmountController,
                     keyboardType: TextInputType.number,
                     hintText: " Enter Discount Amount",
-                    title: "Amount",),
+                       hintStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    title: "Discount Amount",),
+                     SizedBox(
+                    height: 10,
+                  ),
                   PaymentOptionsWidget(onChanged: (value) {
                     print(value);
                     registrationcontroller.paymentController.text = value.toString();
                   },),
+                   SizedBox(
+                    height: 10,
+                  ),
                   CustomTextField(
                     controller: registrationcontroller.advanceAmountController,
                     keyboardType: TextInputType.number,
-                    hintText:"Advance Amount",
-                    title: "Advance",),
+                    hintText:" Enter Advance Amount",
+                    title: "Advance Amount",),
+                      SizedBox(
+                    height: 10,
+                  ),
                   CustomTextField(
                     controller: registrationcontroller.balanceAmountController,
                     keyboardType: TextInputType.number,
-                    hintText: "Balance Amount",
-                    title: "Balance",),
+                    hintText: " Enter Balance Amount",
+                    title: "Balance Amount",),
+                      SizedBox(
+                    height: 10,
+                  ),
                   CustomTextField(
 
                     suffixIcon: Icons.calendar_month,
                     isDatePicker: true,
                     controller: registrationcontroller.dateController, keyboardType: TextInputType.datetime, hintText: "", title: "Treatment Date",),
-                    
+                      SizedBox(
+                    height: 10,
+                  ),
            DropdownTimePicker (
                 selectedValue: registrationcontroller.timeController.text,
                  title: "Treatment Time",
@@ -202,10 +282,17 @@ class _RegisterscreenState extends State<Registerscreen> {
                  },
                  
                 ),
+                SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     children: [
-                      Expanded(child: CustomElevatedButton(text: "Saved", onPressed: () {
-                        print("saved");
+                      Expanded(child: CustomElevatedButton(
+                        borderRadius:9,
+                        // fontsize: ,
+                        fontWeight: FontWeight.bold,
+                        text: "Save", onPressed: () {
+                        print("save");
                         registrationcontroller.register(
                           context
                         );
